@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Examen de Javascript</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="../views/styles/style.css" rel="stylesheet">
+    <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body class="container">
+    <script>
+        function mostrarAntiguedad(valor) {
+            var rowId = valor.parentNode.parentNode;
+            var nombre = rowId.cells[0].innerHTML + " " + rowId.cells[1].innerHTML;
+            var creacion = rowId.cells[5].innerHTML;
+            var antiguedad = "";
+
+            const showCliente = document.getElementById('cliente');
+            showCliente.innerHTML = nombre;
+
+            //calculo de la antiguedad
+            var antiguedadFormat = new Date(creacion)
+            var mesC = antiguedadFormat.getMonth() + 1;
+            var anioC = antiguedadFormat.getFullYear();
+            var diaC = antiguedadFormat.getDate();
+
+            if (isNaN(mesC)) {
+                alert("Problemas con la fecha");
+                return;
+            }
+
+            var hoy = new Date();
+            var mesH = hoy.getMonth() + 1;
+            var anioH = hoy.getFullYear();
+            var diaH = hoy.getDate();
+
+            var diaSum = obtenDiaFin(anioC, mesC);
+
+            var mesAdicional = 0;
+
+            if (diaC > diaH) {
+
+                diaH = parseInt(diaH) + parseInt(diaSum);
+                mesAdicional = 1;
+
+            }
+
+            var dias = diaH - diaC;
+
+            var anioAdicional = 0;
+
+            if (mesC > mesH) {
+                mesH = parseInt(mesH) + 12;
+                anioAdicional = 1;
+            }
+
+            var meses = parseInt(mesH) - (parseInt(mesC) + parseInt(mesAdicional));
+
+            var anio = parseInt(anioH) - (parseInt(anioC) + parseInt(anioAdicional));
+
+            var respuesta = anio + " Años, " + meses + " Meses, y " + dias + " Dias ";
+            const showAntiguedad = document.getElementById('antiguo');
+            showAntiguedad.innerHTML = respuesta;
+            console.log("antiguedadFormat: ", antiguedadFormat);
+        }
+
+        function obtenDiaFin(anio, mes) {
+            var anioAux = anio;
+
+            if (anio < 12) {
+                var mesSiguiente = parseInt(mes) + 1;
+            } else {
+                var mesSiguiente = 1;
+                anioAux = anio + 1;
+            }
+
+            var fecha = anioAux + "-" + mesSiguiente + "-01";
+            ms = Date.parse(fecha);
+            fechaD = new Date(ms);
+            fechaD.setDate(fechaD.getDate() - 1);
+            var diaH = fechaD.getDate();
+
+            return diaH;
+        }
+
+        function mostrarDetalle(valor) {
+            var rowId = valor.parentNode.parentNode;
+            var direccion = rowId.cells[3].innerHTML;
+            var creacion = rowId.cells[5].innerHTML;
+            var balance = rowId.cells[4].innerHTML;
+
+            const showDireccion = document.getElementById('direccion');
+            showDireccion.innerHTML = direccion;
+            const showCreacion = document.getElementById('creacion');
+            showCreacion.innerHTML = creacion;
+
+            var len = balance.length;
+            var valorBalance = balance.substring(1, len);
+
+            const showBalance = document.getElementById('balance');
+            valorBalance = valorBalance.replaceAll(',', '');
+            console.log("valorBalance: ", valorBalance);
+            if (valorBalance < "1500") {
+                //azul y negrita
+                console.log("valorBalance entro en el else: ", balance);
+                showBalance.innerHTML = balance;
+                showBalance.style.color = "blue";
+                showBalance.style.fontWeight = "bold";
+            } else {
+                //verde y negrita
+                console.log("valorBalance entro en el if: ", balance);
+                showBalance.innerHTML = balance;
+                showBalance.style.color = "green";
+                showBalance.style.fontWeight = "bold";
+            }
+
+        }
+    </script>
+    <header class="logo">
+        <img src="../imgs/logo.png" alt="ejemplo javascript">
+    </header>
+
+    <div>
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h2>PRUEBA <b>DE HABILIDAD</b></h2>
+                    </div>
+                    <div class="col-sm-6">
+                        <a href="#" id="botonCliente" class="btn btn-success"><span>Clientes Gold</span></a>
+                        <!--a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a-->
+                    </div>
+                </div>
+            </div>
+            <table class="table table-striped table-hover" id="ttable">
+                <colgroup>
+                    <col span="1" style="width: 20%;">
+                    <col span="1" style="width: 20%;">
+                    <col span="1" style="width: 35%;">
+                    <col span="1" style="width: 35%;">
+                    <col span="1" style="width: 15%;">
+                    <col span="1" style="width: 15%;">
+                    <col span="1" style="width: 35%;">
+                </colgroup>
+                <thead id="thead">
+                    <tr>
+
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Email</th>
+                        <th style="display:none;">Address</th>
+                        <th>Balance</th>
+                        <th style="display:none;">Created</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+    <!-- Edit Modal HTML -->
+    <div id="antiguedad" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form>
+                    <div class="modal-header">
+                        <h4 class="modal-title">ANTIGUEDAD DEL CLIENTE</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label><strong>Nombre cliente:</strong></label>
+                            <h2><label id="cliente"></label></h2>
+                        </div>
+                        <div class="form-group">
+                            <label><strong>Antiguedad:</strong></label>
+                            <h2><label id="antiguo"></label></h2>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cerrar">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal HTML -->
+    <div id="detalle" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form>
+                    <div class="modal-header">
+                        <h4 class="modal-title">DETALLE DEL CLIENTE</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label><strong>Direccion:</strong></label>
+                            <h2><label id="direccion"></label></h2>
+                        </div>
+                        <div class="form-group">
+                            <label><strong>Fecha de creacion:</strong></label>
+                            <h2><label id="creacion"></label></h2>
+                        </div>
+                        <div class="form-group">
+                            <label><strong>Balance:</strong></label>
+                            <h2><label id="balance"></label></h2>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cerrar">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../backend/index.js">
+    </script>
+    <!--script type="text/javascript" src="../bootstrap/js/bootstrap.min.js">
+    </script-->
+</body>
+
+</html>
